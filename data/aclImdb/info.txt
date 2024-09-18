@@ -1,0 +1,12 @@
+This dataset contains movie reviews and their associated scores (between
+1 and 10) as provided by IMDb.5 Maas et al. converted these scores to
+binary labels by assigning each review a positive or negative label if the
+review score was above 6 or below 5, respectively. Reviews with scores
+5 and 6 were considered too neutral and thus excluded. We follow the
+same protocol in this chapter.
+The dataset is divided in two even partitions called train and test,
+each containing 25,000 reviews. The dataset also provides additional
+unlabeled reviews, but we will not use those here. Each partition contains two directories called pos and neg where the positive and negative
+examples are stored. Each review is stored in an independent text file,
+whose name is composed of an id unique to the partition and the score
+associated with the review, separated by an underscore.
