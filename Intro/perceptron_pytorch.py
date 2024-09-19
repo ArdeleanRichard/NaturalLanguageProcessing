@@ -7,14 +7,28 @@ from utils.data import get_data_count_vectorized, get_data_count_vectorized_pyto
 from utils.validation import binary_classification_report
 
 
+def model_variation1(n_features):
+    model = nn.Linear(n_features, 1)
+    loss_func = nn.BCEWithLogitsLoss()
+
+    return model, loss_func
+
+def model_variation2(n_features):
+    model = nn.Sequential(
+        nn.Linear(n_features, 2),
+        nn.LogSoftmax(dim=1),
+    )
+    loss_func = nn.NLLLoss()
+
+    return model, loss_func
+
 def create_perceptron_model(X_train, y_train):
     n_examples, n_features = X_train.shape
 
     lr = 1e-1
     n_epochs = 10
 
-    model = nn.Linear(n_features, 1)
-    loss_func = nn.BCEWithLogitsLoss()
+    model, loss_func = model_variation1(n_features)
     optimizer = optim.SGD(model.parameters(), lr=lr)
 
     X_train = torch.tensor(X_train, dtype=torch.float32)
@@ -27,14 +41,17 @@ def create_perceptron_model(X_train, y_train):
 
         # for each training example
         for i in tqdm(indices, desc=f'epoch {epoch + 1}'):
-            x = X_train[i]
-            y_true = y_train[i]
-
+            x = X_train[i]  # for variation1
+            y_true = y_train[i]  # for variation1
+            # x = X_train[i].unsqueeze(0)  # for variation2
+            # y_true = y_train[i].unsqueeze(0)  # for variation2
+            
             # make predictions
             y_pred = model(x)
 
             # calculate loss
-            loss = loss_func(y_pred[0], y_true)
+            loss = loss_func(y_pred[0], y_true) # for variation1
+            # loss = loss_func(y_pred, y_true) # for variation2
 
             # calculate gradients through back-propagation
             loss.backward()
