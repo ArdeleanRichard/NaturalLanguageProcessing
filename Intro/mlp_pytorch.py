@@ -5,7 +5,7 @@ from torch import nn
 from torch import optim
 from tqdm import tqdm
 
-from utils.constants import labels
+from utils.constants import labels, device
 from utils.data_agnews import get_data_agnews
 
 
@@ -65,10 +65,6 @@ def eval_model(model, X_test):
 
 
 if __name__ == '__main__':
-    use_gpu = True
-    device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
-    print(f'device: {device.type}')
-
     X_train, y_train, X_test, y_test = get_data_agnews()
     model = create_model(X_train, y_train)
     eval_model(model, X_test)

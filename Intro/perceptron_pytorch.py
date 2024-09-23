@@ -45,7 +45,7 @@ def create_perceptron_model(X_train, y_train):
             y_true = y_train[i]  # for variation1
             # x = X_train[i].unsqueeze(0)  # for variation2
             # y_true = y_train[i].unsqueeze(0)  # for variation2
-            
+
             # make predictions
             y_pred = model(x)
 

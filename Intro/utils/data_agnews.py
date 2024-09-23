@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
 import torch
+from torch.utils.data import Dataset
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 import nltk
@@ -130,6 +133,49 @@ def get_data_agnews():
     X_train, y_train, token_to_id, vocabulary_size = get_train_data(train_file)
     X_test, y_test = get_test_data(test_file, token_to_id, vocabulary_size)
     return X_train, y_train, X_test, y_test
+
+
+
+def get_split_data(train_file, test_file):
+    train_df = get_data_from_file(train_file, train_data=True)
+    test_df = get_data_from_file(test_file, train_data=False)
+
+    add_tokens_to_data(train_df)
+    add_tokens_to_data(test_df)
+
+    train_df, val_df = train_test_split(train_df, train_size=0.8)
+    train_df.reset_index(inplace=True)
+    val_df.reset_index(inplace=True)
+
+    print(f'train rows: {len(train_df.index):,}')
+    print(f'dev rows: {len(val_df.index):,}')
+    print(f'test rows: {len(test_df.index):,}')
+
+    token_to_id, vocabulary_size = create_vocab(train_df)
+    add_features_to_data(train_df, token_to_id)
+    add_features_to_data(val_df, token_to_id)
+    add_features_to_data(test_df, token_to_id)
+
+    return train_df, val_df, test_df, vocabulary_size
+
+
+
+
+class MyDataset(Dataset):
+    def __init__(self, x, y, vocabulary_size):
+        self.x = x
+        self.y = y
+        self.vocabulary_size = vocabulary_size
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, index):
+        x = torch.zeros(self.vocabulary_size, dtype=torch.float32)
+        y = torch.tensor(self.y[index])
+        for k, v in self.x[index].items():
+            x[k] = v
+        return x, y
 
 
 if __name__ == '__main__':
