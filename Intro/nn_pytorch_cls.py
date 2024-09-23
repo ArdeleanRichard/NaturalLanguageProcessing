@@ -14,7 +14,7 @@ from utils.data_agnews import MyDataset, get_split_data_with_features
 from utils.model_aux import plot_train_history
 
 
-def prepare_data(hyperparam, train_df, val_df, test_df):
+def get_dataloaders_from_dataframes(hyperparam, train_df, val_df, test_df):
     train_ds = MyDataset(
         x=train_df['features'],
         y=train_df['class index'] - 1,
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         "dropout": 0.3,
     }
 
-    train_dl, val_dl, test_dl = prepare_data(hyperparam, train_df, val_df, test_df)
+    train_dl, val_dl, test_dl = get_dataloaders_from_dataframes(hyperparam, train_df, val_df, test_df)
 
 
     model, history = train_model(hyperparam, train_dl, val_dl)

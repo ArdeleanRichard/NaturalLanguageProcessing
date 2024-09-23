@@ -11,7 +11,7 @@ from utils.data_agnews_embeddings import MyDataset, get_split_data_with_embeddin
 from utils.model_aux import plot_train_history
 
 
-def prepare_data(hyperparam, train_df, val_df, test_df):
+def get_dataloaders_from_dataframes(hyperparam, train_df, val_df, test_df):
     train_ds = MyDataset(train_df['token ids'], train_df['class index'] - 1)
     train_dl = DataLoader(train_ds, batch_size=hyperparam['batch_size'], shuffle=hyperparam['shuffle'])
 
@@ -181,7 +181,7 @@ if __name__ == '__main__':
         "pad_id": glove.key_to_index['[PAD]']
     }
 
-    train_dl, val_dl, test_dl = prepare_data(hyperparam, train_df, val_df, test_df)
+    train_dl, val_dl, test_dl = get_dataloaders_from_dataframes(hyperparam, train_df, val_df, test_df)
 
     model, history = train_model(hyperparam, train_dl, val_dl)
     plot_train_history(hyperparam, history)

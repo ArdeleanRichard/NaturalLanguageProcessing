@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from utils.constants import agnews_embeddings_file, agnews_train_file, agnews_test_file
-from utils.data_agnews import get_split_data_with_features, get_split_data_with_tokens
+from utils.data_agnews import get_split_data_with_tokens
 
 
 def count_unknown_words(data, vocabulary):
