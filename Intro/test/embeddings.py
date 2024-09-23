@@ -98,7 +98,7 @@ def most_similar_words(word, vectors, index_to_key, key_to_index, topn=10):
 vectors = glove.get_normed_vectors()
 index_to_key = glove.index_to_key
 key_to_index = glove.key_to_index
-most_similar_words("cactus", vectors, index_to_key, key_to_index)
+print(most_similar_words("cactus", vectors, index_to_key, key_to_index))
 
 
 
@@ -153,4 +153,4 @@ negative = ["man"]
 vectors = glove.get_normed_vectors()
 index_to_key = glove.index_to_key
 key_to_index = glove.key_to_index
-analogy(positive, negative, vectors, index_to_key, key_to_index)
+print(analogy(positive, negative, vectors, index_to_key, key_to_index))

@@ -13,15 +13,15 @@ nltk.download('punkt_tab')
 # enable tqdm in pandas - progress_map doesnt exist without
 tqdm.pandas()
 
-from utils.constants import train_file, labels, column_names, test_file
+from utils.constants import agnews_train_file, agnews_labels, agnews_column_names, agnews_test_file
 from collections import defaultdict
 
 def get_data_from_file(file, train_data=False):
     df = pd.read_csv(file, header=None, skiprows=1)
-    df.columns = column_names
+    df.columns = agnews_column_names
 
     if train_data:
-        classes = df['class index'].map(lambda i: labels[i - 1])
+        classes = df['class index'].map(lambda i: agnews_labels[i - 1])
         df.insert(1, 'class', classes)
 
     # print(train_df.head())
@@ -130,13 +130,12 @@ def get_test_data(test_file, token_to_id, vocabulary_size):
 
 
 def get_data_agnews():
-    X_train, y_train, token_to_id, vocabulary_size = get_train_data(train_file)
-    X_test, y_test = get_test_data(test_file, token_to_id, vocabulary_size)
+    X_train, y_train, token_to_id, vocabulary_size = get_train_data(agnews_train_file)
+    X_test, y_test = get_test_data(agnews_test_file, token_to_id, vocabulary_size)
     return X_train, y_train, X_test, y_test
 
 
-
-def get_split_data(train_file, test_file):
+def get_split_data_with_tokens(train_file, test_file):
     train_df = get_data_from_file(train_file, train_data=True)
     test_df = get_data_from_file(test_file, train_data=False)
 
@@ -148,8 +147,14 @@ def get_split_data(train_file, test_file):
     val_df.reset_index(inplace=True)
 
     print(f'train rows: {len(train_df.index):,}')
-    print(f'dev rows: {len(val_df.index):,}')
+    print(f'val rows: {len(val_df.index):,}')
     print(f'test rows: {len(test_df.index):,}')
+
+    return train_df, val_df, test_df
+
+
+def get_split_data_with_features(train_file, test_file):
+    train_df, val_df, test_df = get_split_data_with_tokens(train_file, test_file)
 
     token_to_id, vocabulary_size = create_vocab(train_df)
     add_features_to_data(train_df, token_to_id)
@@ -179,6 +184,8 @@ class MyDataset(Dataset):
 
 
 if __name__ == '__main__':
+    import os
+    os.chdir("../")
     X_train, y_train, X_test, y_test = get_data_agnews()
     print(X_train.shape)
 

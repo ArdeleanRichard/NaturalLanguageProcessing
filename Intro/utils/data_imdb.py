@@ -2,17 +2,17 @@ from glob import glob
 
 import torch
 
-from utils.constants import neg_train_data, pos_train_data, pos_test_data, neg_test_data
+from utils.constants import imdb_train_neg_folder, imdb_train_pos_folder, imdb_test_pos_folder, imdb_test_neg_folder
 
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 
 
 def get_data_files():
-    pos_train_files = glob(pos_train_data)
-    neg_train_files = glob(neg_train_data)
-    pos_test_files = glob(pos_test_data)
-    neg_test_files = glob(neg_test_data)
+    pos_train_files = glob(imdb_train_pos_folder)
+    neg_train_files = glob(imdb_train_neg_folder)
+    pos_test_files = glob(imdb_test_pos_folder)
+    neg_test_files = glob(imdb_test_neg_folder)
 
     print(f'Number of positive reviews: {len(pos_train_files)}')
     print(f'Number of negative reviews: {len(neg_train_files)}')
