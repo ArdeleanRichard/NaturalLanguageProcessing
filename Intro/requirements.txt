@@ -1,0 +1,12 @@
+numpy~=1.26.4
+gensim~=4.3.3
+torch~=2.4.1+cu121
+scikit-learn~=1.5.2
+matplotlib~=3.9.2
+pandas~=2.2.2
+nltk~=3.9.1
+tqdm~=4.66.5
+conllu~=5.0.2
+transformers~=4.44.2
+evaluate~=0.4.3
+datasets~=3.0.0
