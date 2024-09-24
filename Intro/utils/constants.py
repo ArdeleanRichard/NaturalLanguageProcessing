@@ -23,7 +23,7 @@ ancora_test_file  = '../data/ancora/es_ancora-ud-test.conllu'
 ancora_embeddings_file = '../data/embeddings/glove-sbwc.i25.vec'
 
 
-
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 use_gpu = True
 device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
 print(f'device: {device.type}')

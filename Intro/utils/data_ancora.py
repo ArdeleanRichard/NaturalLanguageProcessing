@@ -125,6 +125,27 @@ class MyDataset(Dataset):
         return x, y
 
 
+
+# HUGGING FACE
+def get_dataset_dict():
+    train_df = read_tags(ancora_train_file)
+    valid_df = read_tags(ancora_val_file)
+    test_df  = read_tags(ancora_test_file)
+
+    tags = train_df['tags'].explode().unique()
+    index_to_tag = {i: t for i, t in enumerate(tags)}
+    tag_to_index = {t: i for i, t in enumerate(tags)}
+
+    from datasets import Dataset, DatasetDict
+    ds = DatasetDict()
+    ds['train'] = Dataset.from_pandas(train_df)
+    ds['validation'] = Dataset.from_pandas(valid_df)
+    ds['test'] = Dataset.from_pandas(test_df)
+
+    return ds, tags, index_to_tag, tag_to_index
+
+
+
 if __name__ == '__main__':
     import os
     os.chdir("../")

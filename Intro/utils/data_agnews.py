@@ -182,9 +182,49 @@ class MyDataset(Dataset):
         return x, y
 
 
+
+
+
+
+# HUGGING FACE
+def read_data_from_file(filename):
+    # read csv file
+    df = pd.read_csv(filename, header=None, skiprows=1)
+
+    # add column names
+    df.columns = ['label', 'title', 'description']
+
+    # make labels zero-based
+    df['label'] -= 1
+
+    # concatenate title and description, and remove backslashes
+    df['text'] = df['title'] + " " + df['description']
+    df['text'] = df['text'].str.replace('\\', ' ', regex=False)
+    return df
+
+def get_split_dataset_dict():
+    train_df = read_data_from_file(agnews_train_file)
+    test_df = read_data_from_file(agnews_test_file)
+
+    train_df, eval_df = train_test_split(train_df, train_size=0.9)
+    train_df.reset_index(inplace=True, drop=True)
+    eval_df.reset_index(inplace=True, drop=True)
+
+    from datasets import Dataset, DatasetDict
+    ds = DatasetDict()
+    ds['train'] = Dataset.from_pandas(train_df)
+    ds['validation'] = Dataset.from_pandas(eval_df)
+    ds['test'] = Dataset.from_pandas(test_df)
+
+    return ds
+
+
+
+
 if __name__ == '__main__':
     import os
     os.chdir("../")
+
     X_train, y_train, X_test, y_test = get_data_agnews()
     print(X_train.shape)
 
