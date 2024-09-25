@@ -66,22 +66,21 @@ def get_tag_ids(tags, tag_to_index):
     return get_ids(tags, tag_to_index)
 
 
-def create_vocab_of_pos_tags(train_df):
+def create_vocab_of_pos_tags(df):
     # construct a vocabulary of POS tags. Once again, we generate a
     # list of tags using explode(), which linearizes our sequence of sequence
     # of tags, and remove repeated tags using unique(). We also add a special
     # tag for the padding token:
 
     pad_tag = '<pad>'
-    index_to_tag = train_df['tags'].explode().unique().tolist() + [pad_tag]
+    index_to_tag = df['tags'].explode().unique().tolist() + [pad_tag]
     tag_to_index = {t: i for i, t in enumerate(index_to_tag)}
     pad_tag_id = tag_to_index[pad_tag]
 
     return tag_to_index, index_to_tag, pad_tag_id
 
 
-def create_dataframe(file, glove, unk_id, tag_to_index=None, index_to_tag=None, pad_tag_id=None):
-    df = read_tags(file)
+def prepare_dataframe(df, glove, unk_id, tag_to_index=None, index_to_tag=None, pad_tag_id=None):
     df['words'] = df['words'].progress_map(preprocess)
     print(df.head())
 
@@ -103,10 +102,14 @@ def create_dataframe(file, glove, unk_id, tag_to_index=None, index_to_tag=None, 
 
 
 def get_split_dataframes():
+    train_df = read_tags(ancora_train_file)
+    val_df = read_tags(ancora_val_file)
+    test_df = read_tags(ancora_test_file)
+
     glove, unk_id, pad_tok_id = load_embeddings()
-    train_df, tag_to_index, index_to_tag, pad_tag_id = create_dataframe(ancora_train_file, glove, unk_id, tag_to_index=None, index_to_tag=None, pad_tag_id=None)
-    val_df, _, _, _ = create_dataframe(ancora_val_file, glove, unk_id, tag_to_index=tag_to_index)
-    test_df, _, _, _ = create_dataframe(ancora_test_file, glove, unk_id, tag_to_index=tag_to_index)
+    train_df, tag_to_index, index_to_tag, pad_tag_id = prepare_dataframe(train_df, glove, unk_id, tag_to_index=None, index_to_tag=None, pad_tag_id=None)
+    val_df, _, _, _ = prepare_dataframe(val_df, glove, unk_id, tag_to_index=tag_to_index)
+    test_df, _, _, _ = prepare_dataframe(test_df, glove, unk_id, tag_to_index=tag_to_index)
 
     return glove, train_df, val_df, test_df, index_to_tag, pad_tok_id, pad_tag_id
 
@@ -150,5 +153,5 @@ if __name__ == '__main__':
     import os
     os.chdir("../")
 
-    train_df, val_df, test_df = get_split_dataframes()
+    glove, train_df, val_df, test_df, index_to_tag, pad_tok_id, pad_tag_id = get_split_dataframes()
 
