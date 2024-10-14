@@ -161,7 +161,6 @@ def train_model(hyperparam, train_dl, val_dl):
         'val_acc': val_acc
     }
 
-
     return model, history
 
 
